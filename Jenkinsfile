@@ -1,29 +1,39 @@
 pipeline {
     agent any
+    environment{
+        FUNCTION_NAME="educacionit_s3toDynamonCSVImport"
+        BUCKETS3="desafio-cvs-loader-bucket"
+        ZIP="function.zip"
+        CODE="lambda_function.py"
+    }
 
     stages {
-        stage('AWS VALIDATE') {
+        stage('INIT') {
             steps {
-                echo 'AWS STS'
+                echo "Initializing Pipeline"
                 sh 'aws sts get-caller-identity'
             }
         }
-        stage('AWS S3 listar') {
+        stage('AWS S3 ls') {
             steps {
                 sh 'aws s3 ls'
             }
         } 
-        stage('Git Clone') {
+        stage('BUILD TO ZIP') {
             steps {
-                sh 'rm -rf static-website/'
-                sh 'git clone https://github.com/firetch/static-website.git'
-                sh 'ls -lrt static-website/'
+                sh 'zip -jr $ZIP $CODE'
+                sh 'ls -lrt'
             }
         } 
         stage('Upload to S3') {
             steps {
-                sh 'aws s3 cp static-website s3://desafio-cvs-loader-bucket --recursive'
+                sh 'aws s3 cp $ZIP s3://${BUCKETS3}'
             }
-        }         
+        } 
+        stage('Deploy to Lambda') {
+            steps {
+                sh 'aws lambda update-function-code --function-name $FUNCTION_NAME --s3-bucket ${BUCKETS3} --s3-key $ZIP --publish'
+            }
+        }   
     }
 }
