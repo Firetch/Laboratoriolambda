@@ -22,7 +22,7 @@ pipeline {
         } 
         stage('BUILD TO ZIP') {
             steps {
-                echo "Building $(BRANCH_NAME)"
+                echo "Building ${BRANCH_NAME}"
                 sh 'zip -jr $ZIP $CODE'
                 sh 'ls -lrt'
             }
