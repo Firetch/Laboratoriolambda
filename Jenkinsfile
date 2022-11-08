@@ -5,6 +5,7 @@ pipeline {
         BUCKETS3="desafio-cvs-loader-bucket"
         ZIP="function.zip"
         CODE="lambda_function.py"
+        BRANCH_NAME="main"
     }
 
     stages {
@@ -21,6 +22,7 @@ pipeline {
         } 
         stage('BUILD TO ZIP') {
             steps {
+                echo "Building $(BRANCH_NAME)"
                 sh 'zip -jr $ZIP $CODE'
                 sh 'ls -lrt'
             }
