@@ -2,7 +2,7 @@ pipeline {
     agent any
     environment{
         FUNCTION_NAME="educacionit_s3toDynamonCSVImport"
-        BUCKETS3="desafio-cvs-loader-bucket"
+        BUCKETS3="desafio-csv-loader-bucket"
         ZIP="function.zip"
         CODE="lambda_function.py"
         BRANCH_NAME="main"
